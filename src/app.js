@@ -11,7 +11,9 @@ app.use(morgan("dev"))
 app.use(helmet()) //hidden framework using
 app.use(compression())
 //init db
-
+require('./dbs/init.mongodb')
+const { checkOverload } = require('./helpers/check.connect');
+checkOverload();
 //init route
 app.get('/', (req, res, next) => {
     const helloWorld = 'Hello word';
