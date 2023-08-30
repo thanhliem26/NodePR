@@ -6,6 +6,10 @@ require('dotenv').config();
 
 const app = express();
 
+//encode data when use method post
+app.use(express.json());
+app.use(express.urlencoded({extended: true}))
+
 //init middleware
 app.use(morgan("dev"))
 app.use(helmet()) //hidden framework using
@@ -17,14 +21,7 @@ const { checkOverload } = require('./helpers/check.connect');
 checkOverload();
 
 //init route
-app.get('/', (req, res, next) => {
-    const helloWorld = 'Hello word';
-
-    return res.status(200).json({
-        message: 'Hello word',
-        metaData: helloWorld.repeat(100000)
-    })
-})
+app.use('/', require('./routers'))
 //handle errors
 
 module.exports = app;

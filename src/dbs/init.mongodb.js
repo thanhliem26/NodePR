@@ -5,7 +5,6 @@ const mongoose = require('mongoose');
 const { countConnect } = require('../helpers/check.connect');
 const { db: { host, name, port } } = require('../config/config.mongodb');
 const connectString = `mongodb://${host}:${port}/${name}`;
-
 class Database {
     constructor() {
         this.connect();
@@ -19,7 +18,7 @@ class Database {
         }
 
         mongoose.connect(connectString, {maxPoolSize: 50}).then((_) => console.log("connected mongoDB", countConnect()))
-        .catch((err) => console.log("error connect"))
+        .catch((err) => console.log("error connect", err))
     }
 
     static getIntance() {
