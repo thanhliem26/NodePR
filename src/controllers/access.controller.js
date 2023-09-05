@@ -1,20 +1,17 @@
 'use strict'
 
 const AccessService = require("../services/access.service");
-
+const { OK, CREATED } = require('../core/succes.response');
 class AccessController {
 
     signUp = async (req, res, next) => {
-        try {
-            console.log('P::SING UP', req.body);
-            /*
-                200 OK
-                201 CREATED
-            */
-            return res.status(201).json(await AccessService.signUp(req.body))
-        } catch(error) {
-            next(error)
-        }
+        new CREATED({
+            message: 'Regiserted OK!',
+            metadata: await AccessService.signUp(req.body),
+            options: {
+                limit: 10,
+            }
+        }).send(res)
     }
 }
 
