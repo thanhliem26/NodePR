@@ -42,7 +42,6 @@ const permission = (permission) => {
             })
         }
 
-        console.log('permissions', req.objKey.permissions)
         const validPermisson = req.objKey.permissions.includes(permission);
         if(!validPermisson) {
             return res.status(403).json({
