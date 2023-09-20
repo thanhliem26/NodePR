@@ -25,7 +25,7 @@ class keyTokenService {
     }
 
     static findByUserId = async (userId) => {
-        const key = await KeyTokenMoel.findOne({user: new Types.ObjectId(userId)}).lean()
+        const key = await KeyTokenMoel.findOne({user: new Types.ObjectId(userId)})
         return key;
     }
 

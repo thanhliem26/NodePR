@@ -18,13 +18,41 @@ const RoleShop = {
 
 class AccessService {
 
+    static handleRefreshTokenV2 = async ({refreshToken, user, keyStore}) => {
+        const { userId, email } = user;
+
+        if(keyStore.refreshTokenUsed.includes(refreshToken)) {
+            await keyTokenService.deleteKeyById(userId);
+            throw new ForbiddenError('Something wrong happend !! Pls relogin')
+        }
+
+        if(keyStore.refreshToken !== refreshToken) throw new AuthFailureError("Shop not registed");
+
+        const foundShop = await findByEmail({email});
+        if(!foundShop) throw new AuthFailureError("Shop not registed");
+
+        const tokens = await  createTokenPair({ userId: foundShop._id, email }, keyStore.publicKey, keyStore.privateKey);
+        await keyStore.updateOne({
+            $set: {
+                refreshToken: tokens.refreshToken
+            },
+            $addToSet: {
+                refreshTokenUsed: refreshToken
+            }
+        })
+
+        return {
+            user,
+            tokens,
+        }
+    }
+
     static handleRefreshToken = async (refreshToken) => {
         const foundToken = await keyTokenService.findByRefreshTokenUsed(refreshToken);
 
         if(foundToken) {
             //decode user nào đang sử dụng lại refresh token
             const { userId, email } = await verifyJWT( refreshToken, foundToken.privateKey)
-            console.log("🚀 ~ file: access.service.js:26 ~ AccessService ~ handleRefreshToken= ~ userId:", userId, email)
             await keyTokenService.deleteKeyById(userId)
           
             throw new ForbiddenError("Something wrong happend !!! Pls relogin")
