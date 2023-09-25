@@ -64,8 +64,19 @@ const electronincSchema = new Schema({
     timestamps: true
 })
 
+const funitureSchema = new Schema({
+    brand: {type: String, required: true},
+    size: String,
+    material: String,
+    product_shop: {type: Schema.Types.ObjectId, ref: 'Shop'}
+}, {
+    colletion: 'funitures',
+    timestamps: true
+})
+
 module.exports = {
     product: model(DOCUMENT_NAME, productSchema),
     electrtonic: model('Electronics', electronincSchema),
     clothing: model('Clothing', clothingSchema),
+    funiture: model('funiture', funitureSchema),
 }
