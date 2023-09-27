@@ -3,18 +3,26 @@
 const { Types } = require('mongoose');
 const { product, clothing, electrtonic, funiture } = require('../models/product.model')
 const { BadRequestError } = require('../core/error.response')
-const { findAllDraftForShop, publishProductByShop, findAllPublishForShop, unPublishProductByShop, searchProductByUser } = require('../models/repository/product.repo');
+const { 
+    findAllDraftForShop, 
+    publishProductByShop, 
+    findAllPublishForShop, 
+    unPublishProductByShop, 
+    searchProductByUser,
+    findAllProducts,
+    findProduct
+} = require('../models/repository/product.repo');
 
 class ProductFactory {
     static productRegistry = {};
 
     static registerProductType(type, classRef) {
         ProductFactory.productRegistry[type] = classRef
-    } 
+    }
 
     static async createProduct(type, payload) {
         const productClass = ProductFactory.productRegistry[type];
-        if(!productClass) throw new BadRequestError("Invalid Product Type", type);
+        if (!productClass) throw new BadRequestError("Invalid Product Type", type);
         return new productClass(payload).createProduct();
         // switch (type) {
         //     case 'Eletronics':
@@ -26,28 +34,53 @@ class ProductFactory {
         // }
     }
 
-    static async findAllDraftForShop({product_shop, limit = 50, skip = 0}) {
+    static async updateProduct(type, payload) {
+        const productClass = ProductFactory.productRegistry[type];
+        if (!productClass) throw new BadRequestError("Invalid Product Type", type);
+        return new productClass(payload).createProduct();
+        // switch (type) {
+        //     case 'Eletronics':
+        //         return new Electronics(payload).createProduct()
+        //     case 'Clothing':
+        //         return new Clothing(payload).createProduct()
+        //     default:
+        //         throw new BadRequestError('Invalid product type', type)
+        // }
+    }
+
+    //PUT
+    static async publishProductByShop({ product_shop, product_id }) {
+        return await publishProductByShop({ product_shop, product_id })
+    }
+
+    static async unPublishProductByShop({ product_shop, product_id }) {
+        return await unPublishProductByShop({ product_shop, product_id })
+    }
+
+    //QUERY
+
+    static async findAllDraftForShop({ product_shop, limit = 50, skip = 0 }) {
         const query = { product_shop, isDraft: true }
 
-        return await findAllDraftForShop({query, limit, skip})
+        return await findAllDraftForShop({ query, limit, skip })
     }
 
-    static async findAllPublishForShop({product_shop, limit = 50, skip = 0}) {
+    static async findAllPublishForShop({ product_shop, limit = 50, skip = 0 }) {
         const query = { product_shop, isPublish: true }
 
-        return await findAllPublishForShop({query, limit, skip})
+        return await findAllPublishForShop({ query, limit, skip })
     }
 
-    static async publishProductByShop({product_shop, product_id}) {
-        return await publishProductByShop({product_shop, product_id})
+    static async searchProduct({ keySearch }) {
+        return await searchProductByUser({ keySearch })
     }
 
-    static async unPublishProductByShop({product_shop, product_id}) {
-        return await unPublishProductByShop({product_shop, product_id})
+    static async fillAllProducts({ limit = 50, sort = 'ctime', page = 1, filter ={isPublish: true} }) {
+        return await findAllProducts({ limit, sort, filter, page, select: ['product_name', 'product_price', 'product_thumb'] })
     }
 
-    static async searchProduct({keySearch}) {
-        return await searchProductByUser({keySearch})
+    static async findProduct({ product_id }) {
+        return await findProduct({ product_id,unSelect: ['__v'] })
     }
 }
 
@@ -68,7 +101,7 @@ class Product {
     }
 
     async createProduct(product_id) {
-        return await product.create({...this, _id: product_id})
+        return await product.create({ ...this, _id: product_id })
     }
 }
 
