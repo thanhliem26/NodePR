@@ -10,8 +10,10 @@ const {
     unPublishProductByShop, 
     searchProductByUser,
     findAllProducts,
-    findProduct
+    findProduct,
+    updateProductById
 } = require('../models/repository/product.repo');
+const { removeUndefiendObject } = require('../utils');
 
 class ProductFactory {
     static productRegistry = {};
@@ -34,18 +36,10 @@ class ProductFactory {
         // }
     }
 
-    static async updateProduct(type, payload) {
+    static async updateProduct(type, productId, payload) {
         const productClass = ProductFactory.productRegistry[type];
         if (!productClass) throw new BadRequestError("Invalid Product Type", type);
-        return new productClass(payload).createProduct();
-        // switch (type) {
-        //     case 'Eletronics':
-        //         return new Electronics(payload).createProduct()
-        //     case 'Clothing':
-        //         return new Clothing(payload).createProduct()
-        //     default:
-        //         throw new BadRequestError('Invalid product type', type)
-        // }
+        return new productClass(payload).updateProduct(productId);
     }
 
     //PUT
@@ -103,6 +97,10 @@ class Product {
     async createProduct(product_id) {
         return await product.create({ ...this, _id: product_id })
     }
+
+    async updateProduct(productId, payload) {
+        return await updateProductById({productId, bodyUpdate: payload, model: product})
+    }
 }
 
 class Clothing extends Product {
@@ -113,6 +111,17 @@ class Clothing extends Product {
         const newProduct = await super.createProduct(newClothing._id)
         if (!newProduct) throw new BadRequestError('create new Product error')
         return newProduct
+    }
+
+    async updateProduct(productId) {
+        let objectParams = removeUndefiendObject(this);
+        if(objectParams.product_attributes) {
+            //update child
+            await updateProductById({productId, bodyUpdate: objectParams.product_attributes, model: clothing})
+        }
+
+        const updateProduct = await super.updateProduct(productId, objectParams);
+        return updateProduct;
     }
 }
 

@@ -42,7 +42,7 @@ const authentication = asyncHandler(async (req, res, next) => {
 
     const accessToken = req.headers[HEADER.AUTHORIZATION];
     if(!accessToken) throw new AuthFailureError('Inavlid Request access token');
-
+    
     try {
         const decodeUser = JWT.verify(accessToken, keyStore.publicKey)
 
