@@ -28,7 +28,7 @@ const removeUndefiendObject = obj => {
 const updateNestedObjectParser = obj => {
     const final = {};
 
-    Object.key(obj).forEach((key) => {
+    Object.keys(obj).forEach((key) => {
         if(typeof obj[key] === "Object" && !Array.isArray(obj[key])) {
             const response = updateNestedObjectParser(obj[key]);
             Object.keys(response).forEach((a) => {
@@ -38,11 +38,14 @@ const updateNestedObjectParser = obj => {
             final[key] = obj[key]
         }
     })
+    console.log("final", final)
+    return final;
 }
 
 module.exports = {
     getInfoData,
     getSelectData,
     unGetSelectData,
-    removeUndefiendObject
+    removeUndefiendObject,
+    updateNestedObjectParser
 }

@@ -13,7 +13,8 @@ const {
     findProduct,
     updateProductById
 } = require('../models/repository/product.repo');
-const { removeUndefiendObject } = require('../utils');
+const { removeUndefiendObject, updateNestedObjectParser } = require('../utils');
+const { insertInventory } = require('../models/repository/inventory');
 
 class ProductFactory {
     static productRegistry = {};
@@ -95,7 +96,12 @@ class Product {
     }
 
     async createProduct(product_id) {
-        return await product.create({ ...this, _id: product_id })
+        const newProduct = await product.create({ ...this, _id: product_id });
+        if(newProduct) {
+            await insertInventory({productId: newProduct._id, shopId: newProduct.product_shop, stock: newProduct.product_quantity})
+        }
+
+        return newProduct;
     }
 
     async updateProduct(productId, payload) {
@@ -117,10 +123,10 @@ class Clothing extends Product {
         let objectParams = removeUndefiendObject(this);
         if(objectParams.product_attributes) {
             //update child
-            await updateProductById({productId, bodyUpdate: objectParams.product_attributes, model: clothing})
+            await updateProductById({productId, bodyUpdate: updateNestedObjectParser(objectParams.product_attributes), model: clothing})
         }
 
-        const updateProduct = await super.updateProduct(productId, objectParams);
+        const updateProduct = await super.updateProduct(productId, updateNestedObjectParser(objectParams));
         return updateProduct;
     }
 }
