@@ -11,7 +11,7 @@ var DiscountSchema = new Schema({
         type: String,
         required:true,
     },
-    discount_descrption:{
+    discount_description:{
         type: String,
     },
     discount_type:{//percentage
@@ -38,16 +38,20 @@ var DiscountSchema = new Schema({
         type: Date,
         required:true,
     },
+    discount_user_count:{
+        type: Number,
+        required:true,
+    },
     discount_users_used: {//ai da dung
         type: Array,
         default: []
     },
-    discount_max_user_per_user: { type: Number, required: true},// so luong cho phep toi da
+    discount_max_uses_per_user: { type: Number, required: true},// so luong cho phep toi da
     discount_min_order_value: { type: Number, required: true},
     discount_shopId: { type: Schema.Types.ObjectId, ref: 'Shop'},
     discount_is_active: { type: Boolean, default: true},
     discount_applies_to: {type: String, require: true, enum: ['all', 'specific']},
-    discount_product_id: { type: Array, default: []} //so san pham duoc ap dung
+    discount_product_ids: { type: Array, default: []} //so san pham duoc ap dung
 }, {
     timestamp: true,
     collection: COLLECTION_NAME

@@ -1,5 +1,8 @@
 'use strict'
 
+const { Types } = require('mongoose');
+
+const convertToObjectIdMongoDb = id => Types.ObjectId(id);
 
 const _ = require('lodash');
 
@@ -47,5 +50,6 @@ module.exports = {
     getSelectData,
     unGetSelectData,
     removeUndefiendObject,
-    updateNestedObjectParser
+    updateNestedObjectParser,
+    convertToObjectIdMongoDb
 }
