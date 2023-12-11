@@ -4,7 +4,9 @@ const mongoose = require('mongoose');
 
 const { countConnect } = require('../helpers/check.connect');
 const { db: { host, name, port } } = require('../config/config.mongodb');
-const connectString = `mongodb://${host}:${port}/${name}`;
+// const connectString = `mongodb://${host}:${port}/${name}`;\
+const connectString = 'mongodb://127.0.0.1:27017/ShopDev';
+
 class Database {
     constructor() {
         this.connect();
@@ -17,8 +19,14 @@ class Database {
             mongoose.set('debug', { color: true })
         }
 
-        mongoose.connect(connectString, {maxPoolSize: 50}).then((_) => console.log("connected mongoDB", countConnect()))
-        .catch((err) => console.log("error connect", err))
+        try {
+            mongoose.connect(connectString, {maxPoolSize: 50}).then((_) => console.log("connected mongoDB", countConnect()))
+            .catch((err) => console.log("error connect", err))
+        } catch(e) {
+            console.log("error: ", e)
+        }
+
+        
     }
 
     static getIntance() {

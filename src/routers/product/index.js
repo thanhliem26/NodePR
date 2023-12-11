@@ -7,18 +7,18 @@ const { asyncHandler } = require('../../auth/checkAuth');
 const { authentication, authenticationV2 } = require('../../auth/authUtils');
 
 
-router.get('/product/search/:keySearch', asyncHandler(productController.getListSearchProduct));
-router.get('/product', asyncHandler(productController.findAllProduct));
-router.get('/product/:id', asyncHandler(productController.findProduct));
+router.get('/search/:keySearch', asyncHandler(productController.getListSearchProduct));
+router.get('/', asyncHandler(productController.findAllProduct));
+router.get('/:id', asyncHandler(productController.findProduct));
 //authentication
 router.use(authenticationV2);
 
-router.post('/product/create', asyncHandler(productController.createNewProduct));
-router.patch('/product/update/:productId', asyncHandler(productController.updateProduct));
-router.post('/product/publish/:id', asyncHandler(productController.publishProduct));
-router.post('/product/unPublish/:id', asyncHandler(productController.unPublishProductByShop));
+router.post('/create', asyncHandler(productController.createNewProduct));
+router.patch('/update/:productId', asyncHandler(productController.updateProduct));
+router.post('/publish/:id', asyncHandler(productController.publishProduct));
+router.post('/unPublish/:id', asyncHandler(productController.unPublishProductByShop));
 //QUERY//
-router.get('/product/drafts/all', asyncHandler(productController.getAllDraftForShop));
-router.get('/product/publish/all', asyncHandler(productController.getAllPublishForShop));
+router.get('/drafts/all', asyncHandler(productController.getAllDraftForShop));
+router.get('/publish/all', asyncHandler(productController.getAllPublishForShop));
 
 module.exports = router;

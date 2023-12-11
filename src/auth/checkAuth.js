@@ -16,7 +16,6 @@ const apiKey = async (req, res, next) => {
                 message: 'Forbidden Error'
             })
         }
-
         //check exits key
         const objKey = await findById(key);
 

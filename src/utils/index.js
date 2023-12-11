@@ -3,6 +3,7 @@
 const { Types } = require('mongoose');
 
 const convertToObjectIdMongoDb = id => Types.ObjectId(id);
+const convertNewToObjectIdMongoDb = id => new Types.ObjectId(id);
 
 const _ = require('lodash');
 
@@ -51,5 +52,6 @@ module.exports = {
     unGetSelectData,
     removeUndefiendObject,
     updateNestedObjectParser,
-    convertToObjectIdMongoDb
+    convertToObjectIdMongoDb,
+    convertNewToObjectIdMongoDb
 }
