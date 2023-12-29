@@ -3,7 +3,7 @@
 const { populate } = require('../apiKey.model');
 const { product, electrtonic, clothing, funiture } = require('../product.model');
 const { Types } = require('mongoose')
-const { getSelectData, unGetSelectData } = require('../../utils/index')
+const { getSelectData, unGetSelectData, convertNewToObjectIdMongoDb } = require('../../utils/index')
 
 const findAllDraftForShop = async function ({ query, limit = 50, skip = 0 }) {
     return await queryProduct({ query, limit, skip })
@@ -83,8 +83,26 @@ const findProduct = async ({ product_id, unSelect }) => {
 }
 
 const updateProductById = async ({productId, bodyUpdate, model, isNew = true}) => {
-    const result = await model.findByIdAndUpdate(productId, bodyUpdate)
+    const result = await model.findByIdAndUpdate(productId, bodyUpdate, {new: isNew})
     return result;
+}
+
+const getProductById = async (productId) => {
+    return await product.findOne({_id: convertNewToObjectIdMongoDb(productId)})
+}
+
+const checkProductByServer = async (products) => {
+    return await Promise.all(products.map(async product => {
+        const foundProduct = await getProductById(product.productId);
+
+        if(foundProduct) {
+            return {
+                price: foundProduct.product_price,
+                quantity: product.quantity,
+                productId: product.productId
+            }
+        }
+    }))
 }
 
 module.exports = {
@@ -95,5 +113,7 @@ module.exports = {
     searchProductByUser,
     findAllProducts,
     findProduct,
-    updateProductById
+    updateProductById,
+    getProductById,
+    checkProductByServer
 };

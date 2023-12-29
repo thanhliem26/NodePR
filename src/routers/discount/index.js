@@ -13,8 +13,6 @@ router.get('/list_product_code', asyncHandler(DiscountController.getAllDiscountC
 //authentication
 router.use(authenticationV2);
 
-//logout
 router.post('/', asyncHandler(DiscountController.createDiscountCode));
-// router.get('', asyncHandler(DiscountController.getAllDiscountCode));
 
 module.exports = router;

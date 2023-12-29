@@ -147,7 +147,8 @@ console.log("products", products)
             discount_start_date,
             discount_end_date,
             discount_max_uses_per_user,
-            discount_value
+            discount_value,
+            discount_type
         } = foundDiscount;
 
         if(!discount_is_active) throw new NotFoundError('discount expried!');

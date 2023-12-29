@@ -20,13 +20,11 @@ const cartSchema = new Schema({
     cart_count_product: {type: Number, default: 0},
     cart_userId: { type: Number, require: true}
 }, {
-    collation: COLLECTION_NAME,
-    timeseries: {
+    collection: COLLECTION_NAME,
+    timestamp: {
         createdAt: 'createdOn',
         updatedAt: 'modifyOn'
     }
 })
 
-model.exports = {
-    cart: model(DOCUMENT_NAME, cartSchema)
-}
+module.exports = model(DOCUMENT_NAME, cartSchema);
